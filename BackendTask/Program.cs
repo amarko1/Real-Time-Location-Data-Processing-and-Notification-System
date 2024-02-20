@@ -13,10 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 //    serverOptions.Limits.MaxConcurrentUpgradedConnections = 100;
 //});
 
+// usluge za rate limiting
 //cache rate limit
 builder.Services.AddMemoryCache();
 
-// usluge za rate limiting
 builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
 builder.Services.AddInMemoryRateLimiting();
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
