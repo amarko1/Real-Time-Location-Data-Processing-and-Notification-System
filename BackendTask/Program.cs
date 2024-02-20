@@ -1,9 +1,26 @@
+using AspNetCoreRateLimit;
 using BackendTask.DbModels;
 using BackendTask.Repository;
 using BackendTask.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//kestrel
+//builder.WebHost.ConfigureKestrel(serverOptions =>
+//{
+//    serverOptions.Limits.MaxConcurrentConnections = 100;
+//    serverOptions.Limits.MaxConcurrentUpgradedConnections = 100;
+//});
+
+//cache rate limit
+builder.Services.AddMemoryCache();
+
+// usluge za rate limiting
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
 
 // Add services to the container.
 
@@ -55,5 +72,7 @@ app.UseEndpoints(endpoints =>
 });
 
 app.MapControllers();
+
+app.UseIpRateLimiting();
 
 app.Run();
